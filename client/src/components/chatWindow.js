@@ -43,13 +43,13 @@ export default function ChatWindow() {
 
   function handleInput(e) {
     setMessage(e.target.value);
-    socket.emit("typing-started");
+    socket.emit("typing-started", { roomId });
 
     if (typingTimeout) clearTimeout(typingTimeout);
 
     settypingTimeout(
       setTimeout(() => {
-        socket.emit("typing-stopped");
+        socket.emit("typing-stopped", { roomId });
       }, 1000)
     );
   }
@@ -65,12 +65,20 @@ export default function ChatWindow() {
         }}
       >
         <Container>
-            {roomId && <Typography>Room: {roomId}</Typography>}
+          {roomId && (
+            <Typography sx={{ fontWeight: "bold", fontSize: 14 }}>
+              Room: {roomId}
+            </Typography>
+          )}
           <Box sx={{ marginBlock: 5 }}>
             {chat.map((data) => {
               return (
                 <Typography
-                  sx={{ textAlign: data.recieved ? "left" : "right" }}
+                  sx={{
+                    textAlign: data.recieved ? "left" : "right",
+                    fontSize: 15,
+                    color: "white",
+                  }}
                   key={data.message}
                 >
                   {data.message}
@@ -97,7 +105,7 @@ export default function ChatWindow() {
                 <InputAdornment position="end">
                   <IconButton type="submit" onClick={handleSubmit} edge="end">
                     {" "}
-                    <SendIcon />
+                    <SendIcon sx={{ fontSize: 32 }} />
                   </IconButton>
                 </InputAdornment>
               }
